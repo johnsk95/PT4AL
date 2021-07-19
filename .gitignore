@@ -1,0 +1,9 @@
+*.txt
+*.png
+
+/checkpoint
+/checkpoint_int
+/backup
+/__pycache__
+/loss
+/DATA3

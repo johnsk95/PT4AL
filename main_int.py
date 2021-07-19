@@ -119,9 +119,9 @@ def test(criterion, epoch, cycle):
             'acc': acc,
             'epoch': epoch,
         }
-        if not os.path.isdir('checkpoint'):
-            os.mkdir('checkpoint')
-        torch.save(state, f'./checkpoint/main_{cycle}.pth')
+        if not os.path.isdir('checkpoint_int'):
+            os.mkdir('checkpoint_int')
+        torch.save(state, f'./checkpoint_int/main_{cycle}.pth')
         best_acc = acc
 
 def get_plabels(net, samples, cycle):
@@ -151,7 +151,6 @@ def get_plabels(net, samples, cycle):
     # for l in class_dict.values():
     #     classdist.append(len(l))
     # print('Class distribution: ', classdist)
-
     sample1k = []
     for items in class_dict.values():
         if len(items) == 100:
@@ -179,7 +178,7 @@ if __name__ == '__main__':
     #         samples = f.readlines()
     #     if i > 0:
     #         print('>> Getting previous checkpoint')
-    #         checkpoint = torch.load(f'./checkpoint/main_{i-1}.pth')
+    #         checkpoint = torch.load(f'./checkpoint_int/main_{i-1}.pth')
     #         net.load_state_dict(checkpoint['net'])
     #         # pseudo-labeling
     #         sample1k = get_plabels(net, samples, i)
@@ -189,8 +188,8 @@ if __name__ == '__main__':
     #         sample1k = samples[[j*5 for j in range(1000)]]
     #     labeled.extend(sample1k)
 
-    # print("labeled length(6000): ", len(labeled))
-        
+    # print("labeled length(7000): ", len(labeled))
+
     CYCLES = 10
     # for cycle in range(CYCLES):
     for cycle in range(7,10):
@@ -206,18 +205,22 @@ if __name__ == '__main__':
         with open(f'./loss/batch_{cycle}.txt', 'r') as f:
             samples = f.readlines()
             
-        if cycle > 0:
-            print('>> Getting previous checkpoint')
-            checkpoint = torch.load(f'./checkpoint/main_{cycle-1}.pth')
-            net.load_state_dict(checkpoint['net'])
-            # pseudo-labeling
-            sample1k = get_plabels(net, samples, cycle)
-        else:
-            # first iteration: sample 1k at even intervals
-            samples = np.array(samples)
-            sample1k = samples[[j*5 for j in range(1000)]]
+        # if cycle > 0:
+        #     print('>> Getting previous checkpoint')
+        #     checkpoint = torch.load(f'./checkpoint/main_{cycle-1}.pth')
+        #     net.load_state_dict(checkpoint['net'])
+        #     # pseudo-labeling
+        #     sample1k = get_plabels(net, samples, cycle)
+        # else:
+        #     # first iteration: sample 1k at even intervals
+        #     samples = np.array(samples)
+        #     sample1k = samples[[j*5 for j in range(1000)]]
+
+        # always sample at interval 
+        samples = np.array(samples)
+        sample1k = samples[[j*5 for j in range(1000)]]
         # record class distribution of 1k samples
-        with open(f'./classdist.txt', 'a') as f:
+        with open(f'./classdist_int.txt', 'a') as f:
             dist = get_classdist(sample1k)
             f.write(str(dist)+'\n')
         # add 1k samples to labeled set
@@ -230,5 +233,5 @@ if __name__ == '__main__':
             train(criterion, optimizer, epoch, trainloader)
             test(criterion, epoch, cycle)
             scheduler.step()
-        with open(f'./main_best.txt', 'a') as f:
+        with open(f'./main_best_interval.txt', 'a') as f:
             f.write(str(cycle) + ' ' + str(best_acc)+'\n')
