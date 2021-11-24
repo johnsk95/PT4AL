@@ -17,13 +17,6 @@ from loader import Loader, RotationLoader
 from utils import progress_bar
 import numpy as np
 
-random_seed = 0
-torch.manual_seed(random_seed)
-torch.cuda.manual_seed(random_seed)
-cudnn.deterministic = True
-cudnn.benchmark = False
-np.random.seed(random_seed)
-random.seed(random_seed)
 
 parser = argparse.ArgumentParser(description='PyTorch CIFAR10 Training')
 parser.add_argument('--lr', default=0.1, type=float, help='learning rate')
@@ -49,8 +42,8 @@ transform_test = transforms.Compose([
     transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
 ])
 
-trainset = RotationLoader(is_train=0, transform=transform_train)
-trainloader = torch.utils.data.DataLoader(trainset, batch_size=512, shuffle=True, num_workers=5)
+trainset = RotationLoader(is_train=0, transform=transform_test)
+trainloader = torch.utils.data.DataLoader(trainset, batch_size=256, shuffle=True, num_workers=2)
 
 testset = RotationLoader(is_train=1,  transform=transform_test)
 testloader = torch.utils.data.DataLoader(testset, batch_size=100, shuffle=False, num_workers=2)
@@ -64,21 +57,13 @@ net = ResNet18()
 net.linear = nn.Linear(512, 4)
 net = net.to(device)
 
+
 if device == 'cuda':
     net = torch.nn.DataParallel(net)
-    # cudnn.benchmark = True
-
-if args.resume:
-    # Load checkpoint.
-    print('==> Resuming from checkpoint..')
-    assert os.path.isdir('checkpoint'), 'Error: no checkpoint directory found!'
-    checkpoint = torch.load('./checkpoint/ckpt.pth')
-    net.load_state_dict(checkpoint['net'])
-    best_acc = checkpoint['acc']
-    start_epoch = checkpoint['epoch']
+    cudnn.benchmark = True
 
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.SGD(net.parameters(), lr=0.1,momentum=0.9, weight_decay=5e-4)
+optimizer = optim.SGD(net.parameters(), lr=0.1, momentum=0.9, weight_decay=5e-4)
 scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[30, 60, 90])
 
 # Training
@@ -88,18 +73,31 @@ def train(epoch):
     train_loss = 0
     correct = 0
     total = 0
-    for batch_idx, (inputs, targets) in enumerate(trainloader):
-        inputs,targets = inputs.to(device), targets.to(device)
+    for batch_idx, (inputs, inputs1, inputs2, inputs3, targets, targets1, targets2, targets3) in enumerate(trainloader):
+        inputs, inputs1, targets, targets1 = inputs.to(device), inputs1.to(device), targets.to(device), targets1.to(device)
+        inputs2, inputs3, targets2, targets3 = inputs2.to(device), inputs3.to(device), targets2.to(device), targets3.to(device)
         optimizer.zero_grad()
-        outputs = net(inputs)
-        loss = criterion(outputs, targets)
+        outputs, outputs1, outputs2, outputs3 = net(inputs), net(inputs1), net(inputs2), net(inputs3)
+
+        loss1 = criterion(outputs, targets)
+        loss2 = criterion(outputs1, targets1)
+        loss3 = criterion(outputs2, targets2)
+        loss4 = criterion(outputs3, targets3)
+        loss = (loss1+loss2+loss3+loss4)/4.
         loss.backward()
         optimizer.step()
 
         train_loss += loss.item()
         _, predicted = outputs.max(1)
-        total += targets.size(0)
+        _, predicted1 = outputs1.max(1)
+        _, predicted2 = outputs2.max(1)
+        _, predicted3 = outputs3.max(1)
+        total += targets.size(0)*4
+
         correct += predicted.eq(targets).sum().item()
+        correct += predicted1.eq(targets1).sum().item()
+        correct += predicted2.eq(targets2).sum().item()
+        correct += predicted3.eq(targets3).sum().item()
 
         progress_bar(batch_idx, len(trainloader), 'Loss: %.3f | Acc: %.3f%% (%d/%d)'
                      % (train_loss/(batch_idx+1), 100.*correct/total, correct, total))
@@ -141,6 +139,8 @@ def test(epoch):
 
     # Save checkpoint.
     acc = 100.*correct/total
+    with open('./best_rotation.txt','a') as f:
+        f.write(str(acc)+':'+str(epoch)+'\n')
     if acc > best_acc:
         print('Saving..')
         state = {
@@ -150,6 +150,7 @@ def test(epoch):
         }
         if not os.path.isdir('checkpoint'):
             os.mkdir('checkpoint')
+        # save rotation weights
         torch.save(state, './checkpoint/rotation.pth')
         best_acc = acc
 
