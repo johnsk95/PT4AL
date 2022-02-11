@@ -41,7 +41,7 @@ transform_test = transforms.Compose([
     transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
 ])
 
-testset = Loader2(is_train=1,  transform=transform_test)
+testset = Loader2(is_train=False,  transform=transform_test)
 testloader = torch.utils.data.DataLoader(testset, batch_size=100, shuffle=False, num_workers=2)
 
 classes = ('plane', 'car', 'bird', 'cat', 'deer',
@@ -119,7 +119,7 @@ def get_plabels(net, samples, cycle):
     class_dict = {}
     [class_dict.setdefault(x,[]) for x in range(10)]
 
-    sub5k = Loader2(is_train=1,  transform=transform_test, path_list=samples)
+    sub5k = Loader2(is_train=False,  transform=transform_test, path_list=samples)
     ploader = torch.utils.data.DataLoader(sub5k, batch_size=1, shuffle=False, num_workers=2)
 
     # overflow goes into remaining
@@ -157,7 +157,7 @@ def get_plabels2(net, samples, cycle):
     [class_dict.setdefault(x,[]) for x in range(10)]
 
     sample1k = []
-    sub5k = Loader2(is_train=1,  transform=transform_test, path_list=samples)
+    sub5k = Loader2(is_train=False,  transform=transform_test, path_list=samples)
     ploader = torch.utils.data.DataLoader(sub5k, batch_size=1, shuffle=False, num_workers=2)
 
     top1_scores = []
@@ -179,7 +179,7 @@ def get_plabels2(net, samples, cycle):
 # entropy sampling
 def get_plabels3(net, samples, cycle):
     sample1k = []
-    sub5k = Loader2(is_train=1,  transform=transform_test, path_list=samples)
+    sub5k = Loader2(is_train=False,  transform=transform_test, path_list=samples)
     ploader = torch.utils.data.DataLoader(sub5k, batch_size=1, shuffle=False, num_workers=2)
 
     top1_scores = []
@@ -234,7 +234,7 @@ if __name__ == '__main__':
         # add 1k samples to labeled set
         labeled.extend(sample1k)
         print(f'>> Labeled length: {len(labeled)}')
-        trainset = Loader2(is_train=0, transform=transform_train, path_list=labeled)
+        trainset = Loader2(is_train=True, transform=transform_train, path_list=labeled)
         trainloader = torch.utils.data.DataLoader(trainset, batch_size=128, shuffle=True, num_workers=2)
 
         for epoch in range(200):

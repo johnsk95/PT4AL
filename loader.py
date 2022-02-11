@@ -10,7 +10,7 @@ import random
 import cv2
 
 class RotationLoader(Dataset):
-    def __init__(self, is_train=0, transform=None, path='./DATA'):
+    def __init__(self, is_train=True, transform=None, path='./DATA'):
         self.is_train = is_train
         self.transform = transform
         # self.h_flip = transforms.RandomHorizontalFlip(p=1)
@@ -26,7 +26,7 @@ class RotationLoader(Dataset):
         img = cv2.imread(self.img_path[idx])
         img = Image.fromarray(img)
 
-        if self.is_train == 0:
+        if self.is_train:
             img = self.transform(img)
             img1 = torch.rot90(img, 1, [1,2])
             img2 = torch.rot90(img, 2, [1,2])
@@ -46,12 +46,12 @@ class RotationLoader(Dataset):
             return imgs[rotations[0]], imgs[rotations[1]], imgs[rotations[2]], imgs[rotations[3]], rotations[0], rotations[1], rotations[2], rotations[3], self.img_path[idx]
 
 class Loader2(Dataset):
-    def __init__(self, is_train=0, transform=None, path='./DATA', path_list=None):
+    def __init__(self, is_train=True, transform=None, path='./DATA', path_list=None):
         self.is_train = is_train
         self.transform = transform
         self.path_list = path_list
 
-        if self.is_train == 0: # train
+        if self.is_train: # train
             self.img_path = path_list
         else:
             if path_list is None:
@@ -62,7 +62,7 @@ class Loader2(Dataset):
         return len(self.img_path)
 
     def __getitem__(self, idx):
-        if self.is_train == 0:
+        if self.is_train:
             img = cv2.imread(self.img_path[idx][:-1])
         else:
             if self.path_list is None:
@@ -76,11 +76,11 @@ class Loader2(Dataset):
         return img, label
 
 class Loader(Dataset):
-    def __init__(self, is_train=0, transform=None, path='./DATA'):
+    def __init__(self, is_train=True, transform=None, path='./DATA'):
         self.classes = 10 
         self.is_train = is_train
         self.transform = transform
-        if self.is_train == 0: # train
+        if self.is_train: # train
             self.img_path = glob.glob('./DATA/train/*/*')
         else:
             self.img_path = glob.glob('./DATA/test/*/*')
