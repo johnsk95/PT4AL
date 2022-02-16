@@ -1,5 +1,5 @@
-# Using Self-Supervised Pretext Tasks for Active Learning - Official Pytorch Implementation
-
+# [Using Self-Supervised Pretext Tasks for Active Learning](https://arxiv.org/abs/2201.07459) - Official Pytorch Implementation
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/using-self-supervised-pretext-tasks-for/active-learning-on-cifar10-10000)](https://paperswithcode.com/sota/active-learning-on-cifar10-10000?p=using-self-supervised-pretext-tasks-for)
 ## Experiment Setting:
 - CIFAR10 (downloaded and saved in ```./DATA```
 - Rotation prediction for pretext task
