@@ -15,6 +15,11 @@ numpy >= 1.16.0
 
 ## Running the Code
 
+To generate train and test dataset:
+```
+python make_data.py
+```
+
 To train the rotation predition task on the unlabeled set:
 ```
 python rotation.py
