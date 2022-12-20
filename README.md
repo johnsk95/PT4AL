@@ -1,5 +1,14 @@
 # [PT4AL: Using Self-Supervised Pretext Tasks for Active Learning (ECCV2022)](https://arxiv.org/abs/2201.07459) - Official Pytorch Implementation
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/using-self-supervised-pretext-tasks-for/active-learning-on-cifar10-10000)](https://paperswithcode.com/sota/active-learning-on-cifar10-10000?p=using-self-supervised-pretext-tasks-for)
+
+# Update Note
+We are redoing the CIFAR10 experiment.
+
+The current reproduction result is the performance of 91 to 93.
+
+We will re-tune the code again for stable performance in the near future.
+
+Sorry for the inconvenience.
 ## Experiment Setting:
 - CIFAR10 (downloaded and saved in ```./DATA```
 - Rotation prediction for pretext task
