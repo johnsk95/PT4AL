@@ -8,6 +8,8 @@ The current reproduction result is the performance of 91 to 93.
 
 We will re-tune the code again for stable performance in the near future.
 
+The rest of the experiments confirmed that there was no problem with reproduction.
+
 Sorry for the inconvenience.
 ## Experiment Setting:
 - CIFAR10 (downloaded and saved in ```./DATA```
