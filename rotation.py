@@ -155,7 +155,7 @@ def test(epoch):
         best_acc = acc
 
 
-for epoch in range(start_epoch, start_epoch+120):
+for epoch in range(start_epoch, start_epoch+15):
     train(epoch)
     test(epoch)
     scheduler.step()
