@@ -74,7 +74,33 @@ class Loader2(Dataset):
         label = int(self.img_path[idx].split('/')[-2])
 
         return img, label
+    
+class Loader_Cold(Dataset):
+    def __init__(self, is_train=True, transform=None, path='./DATA'):
+        self.classes = 10
+        self.is_train = is_train
+        self.transform = transform
+        with open('/workspace/A/PT4AL/loss/batch_5.txt', 'r') as f:
+            self.list = f.readlines()
+        if self.is_train==True: # train
+            self.img_path = self.list
+        else:
+            self.img_path = glob.glob('./DATA/test/*/*')
 
+    def __len__(self):
+        return len(self.img_path)
+
+    def __getitem__(self, idx):
+        if self.is_train ==True:
+            img = cv2.imread(self.img_path[idx][:-1])
+        else:
+            img = cv2.imread(self.img_path[idx])
+        img = Image.fromarray(img)
+        img = self.transform(img)
+        label = int(self.img_path[idx].split('/')[-2])
+
+        return img, label
+    
 class Loader(Dataset):
     def __init__(self, is_train=True, transform=None, path='./DATA'):
         self.classes = 10 
