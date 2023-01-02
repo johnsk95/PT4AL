@@ -3,8 +3,11 @@
 
 # Update Note
 
-- We solved all problems. The issue is that the epoch of the rotation prediction task was supposed to run only 15 epochs, but it was written incorrectly as 120 epochs. Sorry for the inconvenience.
- 
+- We solved all problems. The issue is that the epoch of the rotation prediction task was supposed to run only 15 epochs, but it was written incorrectly as 120 epochs. Sorry for the inconvenience. [2023.01.02]
+
+
+```
+[solved problem]
 We are redoing the CIFAR10 experiment.
 
 The current reproduction result is the performance of 91 to 93.
@@ -12,7 +15,7 @@ The current reproduction result is the performance of 91 to 93.
 We will re-tune the code again for stable performance in the near future.
 
 The rest of the experiments confirmed that there was no problem with reproduction.
-
+```
 Sorry for the inconvenience.
 ## Experiment Setting:
 - CIFAR10 (downloaded and saved in ```./DATA```
