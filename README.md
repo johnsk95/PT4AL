@@ -56,6 +56,8 @@ To mask cold start experiments (random)
 ```
 python main_random.py
 ```
+![image](https://user-images.githubusercontent.com/33244972/210195074-8cc85f97-8a20-4aac-b61b-034e91694788.png)
+
 
 To mask cold start experiments (PT4AL)
 ```
