@@ -82,6 +82,7 @@ class Loader_Cold(Dataset):
         self.transform = transform
         with open('/workspace/A/PT4AL/loss/batch_5.txt', 'r') as f:
             self.list = f.readlines()
+        self.list = [self.list[i*5] for i in range(1000)]
         if self.is_train==True: # train
             self.img_path = self.list
         else:
