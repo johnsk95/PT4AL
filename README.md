@@ -4,7 +4,7 @@
 # Update Note
 
 - We solved all problems. The issue is that the epoch of the rotation prediction task was supposed to run only 15 epochs, but it was written incorrectly as 120 epochs. Sorry for the inconvenience. [2023.01.02]
-
+- Add Cold Start Experiments
 
 ```
 [solved problem]
