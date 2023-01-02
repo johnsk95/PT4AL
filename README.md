@@ -52,6 +52,10 @@ To evaluate on active learning task:
 python main.py
 ```
 
+To mask cold start experiments (random)
+```
+python main_random.py
+```
 ## Citation
 If you use our code in your research, or find our work helpful, please consider citing us with the bibtex below:
 ```
